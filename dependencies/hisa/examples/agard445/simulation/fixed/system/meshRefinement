@@ -1,0 +1,26 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+
+#include "$FOAM_CASE/0.org/include/freestreamConditions"
+
+type            shockRefinement;
+// Free-stream velocity
+UInf            $U;
+// Absolute mesh levels or relative to base mesh
+absolute        yes;
+// Min/max refinement for compressive shocks
+minCompLevel    8;
+maxCompLevel    8;
+// Min/max refinement for expansion shocks
+minExpLevel     8;
+maxExpLevel     8;
+
+compSensCoeff   0.0;
+expSensCoeff    -1.0;
+
+saveMarkedCells yes;

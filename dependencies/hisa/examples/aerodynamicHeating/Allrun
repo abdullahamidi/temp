@@ -1,0 +1,14 @@
+#!/bin/bash
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+./Allmesh
+
+# Update patch name and type
+runApplication -s fluid createPatch -overwrite -region fluid
+runApplication -s solid createPatch -overwrite -region solid
+
+# Run application in parallel
+runApplication -s fluid decomposePar -region fluid -force
+runApplication -s solid decomposePar -region solid -force
+runParallel multiRegionSolver

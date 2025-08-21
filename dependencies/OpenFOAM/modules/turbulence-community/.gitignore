@@ -1,0 +1,42 @@
+# git-ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+
+# Editor and misc backup files - anywhere
+*~
+.*~
+.*.swp
+*.bak
+*.bak[0-9][0-9]
+\#*\#
+
+# Backup/recovery versions - anywhere
+.#*
+
+# Objects and archives - anywhere
+*.[oa]
+*.la
+*.so
+
+# Dependency files - anywhere
+*.dep
+
+# lnInclude (symlink) directories - anywhere
+lnInclude
+
+# Source packages - anywhere
+*.tar.bz2
+*.tar.gz
+*.tar.xz
+*.tar
+*.tgz
+*.gtgz
+
+# Specific files
+libWallModelledLES/versionRules/foamVersion4wmles.H
+libWallModelledLES/versionRules/foamVersion
+libWallModelledLES/foamVersionThisIsCompiledFor
+
+# Reinstate wmake rules that might look like build directories
+!/wmake/rules/*/
+
+####

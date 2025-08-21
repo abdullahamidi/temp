@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+cd mesh
+
+# Cartesian mesh (cfMesh) ..........................
+# Extract feature edges
+runApplication -s Fms surfaceFeatureEdges gmsh/64a004.stl constant/64a004.fms
+runApplication FMSToSurface constant/64a004.fms constant/edges.vtk -exportFeatureEdges
+# Bounding patches
+runApplication surfaceFeatureEdges gmsh/wingBlock.stl constant/wingBlock.ftr
+# Cut-cell Cartesian mesh
+runApplication cartesianMesh
+runApplication rotateMesh "(0 0 1)" "(0 1 0)"
+
+# Tet and Cartesian meshes
+runApplication createPatch -overwrite
+runApplication checkMesh -constant
+
+cd ..
+
+# ----------------------------------------------------------------- end-of-file

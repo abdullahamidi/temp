@@ -1,0 +1,76 @@
+#! /bin/bash
+
+source ./settings
+
+HOMEDIR=`pwd`
+
+cd $SOURCE_DIR
+  ./cleanSimFixed
+  ./cleanSimTransient
+cd $HOMEDIR
+
+
+cat $CONFIG_FILE | while read LINE; do
+    if [ "`echo $LINE`" == "" ]; then continue; fi
+    if [ "`echo $LINE | cut -c 1`" == "#" ]; then continue; fi 
+    echo $LINE | 
+    ( 
+    #Read options
+    read SEQ MACH VELC PDYM
+
+    #Copy data dir
+    DEST_DIR=$SOURCE_DIR\_$SEQ
+    rm -rf $DEST_DIR	
+
+    echo Copying to $DEST_DIR ........................
+    mkdir $DEST_DIR
+    rm -r $DEST_DIR/fixed
+    rm -r $DEST_DIR/transient
+    cp -r $SOURCE_DIR/*         $DEST_DIR
+
+    echo - Setting freestream conditions
+    C=$(echo "scale=8;$VELC/$MACH" | bc)
+    RHO=$(echo "scale=8;2.0*$PDYM/($VELC*$VELC)" | bc)
+    TEMP=$(echo "scale=4;$C*$C/($GAMMA*$R)" | bc)
+    PRESS=$(echo "scale=4;$RHO*$R*$TEMP" | bc)
+    DICTFILE="freestreamConditions"
+    TEMPFILE="temp"
+
+    echo - Setting velocity
+    for i in "${FOLDERS[@]}"
+    do
+        cd $DEST_DIR/$i/0.org/include
+        sed -i "s/\(^U *\).*/U            ($VELC 0.0 0.0);/" $DICTFILE
+        cd $HOMEDIR
+    done
+
+    echo - Setting pressure
+    for i in "${FOLDERS[@]}"
+    do
+        cd $DEST_DIR/$i/0.org/include
+        sed -i "s/\(^p *\).*/p            $PRESS;/" $DICTFILE
+        cd $HOMEDIR
+    done
+
+    echo - Setting temperature
+    for i in "${FOLDERS[@]}"
+    do
+        cd $DEST_DIR/$i/0.org/include
+        sed -i "s/\(^T *\).*/T            $TEMP;/" $DICTFILE
+        cd $HOMEDIR
+    done
+
+    #Set number of processors per job
+    echo - Setting number of processors
+    PROCFILE="decomposeParDict"
+    for i in "${FOLDERS[@]}"
+    do
+        cd $DEST_DIR/$i/system
+        sed -i "s/\(numberOfSubdomains *\).*/numberOfSubdomains $PROC; /" $PROCFILE
+        cd $HOMEDIR
+    done
+
+    )
+done
+
+

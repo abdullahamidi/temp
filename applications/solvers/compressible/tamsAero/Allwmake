@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cd tamsAeroModule
+wmake
+cd ..
+wmake

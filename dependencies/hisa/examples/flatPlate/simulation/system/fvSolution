@@ -1,0 +1,61 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    nuTilda
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          1e-2;
+        minIter         1;
+    }
+}
+
+relaxationFactors
+{
+    equations
+    {
+        nuTilda   0.5;
+    }
+}
+
+flowSolver
+{
+    solver            GMRES;
+    GMRES
+    {
+        inviscidJacobian  LaxFriedrichs;
+        viscousJacobian   laplacian;
+        preconditioner    LUSGS;
+
+        maxIter           20;
+        nKrylov           8;
+        solverTolRel      1e-1 (1e-1 1e-1 1e-1) 1e-1;
+    }
+}
+
+pseudoTime
+{
+    pseudoTol         1e-8 (1e-8 1e-8 1e-8) 1e-8;
+    pseudoCoNum       10.0;
+    pseudoCoNumMax    200.0;
+    localTimestepping true;
+}
+
+// ************************************************************************* //

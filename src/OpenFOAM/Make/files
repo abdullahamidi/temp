@@ -1,0 +1,8 @@
+
+matrices/blockLduMatrix/blockLduSolvers/gmresTams/gmresTams.C
+matrices/blockLduMatrix/blockLduSolvers/gmres_rightPrecond/gmres_rightPrecond.C 
+matrices/blockLduMatrix/blockLduSolvers/gcro/gcro.C
+matrices/blockLduMatrix/blockLduPrecons/lusgsTams/lusgsTams.C
+
+LIB = $(FOAM_USER_LIBBIN)/libOpenFOAMTams
+

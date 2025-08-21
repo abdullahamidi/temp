@@ -1,0 +1,11 @@
+#!/bin/bash
+
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+
+cleanCase
+rm -r constant/fluid/polyMesh
+rm -r constant/solid/polyMesh
+rm -r constant/fluid/extendedFeatureEdgeMesh
+rm -r constant/solid/extendedFeatureEdgeMesh
+rm -r constant/extendedFeatureEdgeMesh
+rm -r constant/triSurface/*.eMesh

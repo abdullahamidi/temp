@@ -1,0 +1,108 @@
+#! /bin/bash
+
+check_openfoam()
+{
+    if [ -z "$WM_PROJECT_VERSION" ]; then
+        echo "OpenFOAM is not sourced."
+        return 1
+    elif [ "$WM_PROJECT_VERSION" != "$required_OpenFOAM_version" ]; then
+        echo "OpenFOAM version $WM_PROJECT_VERSION is sourced, but version $required_version is required."
+        return 1
+    else
+        echo "OpenFOAM version $WM_PROJECT_VERSION is correctly sourced."
+        return 0
+    fi
+}
+
+# Main script execution
+
+# OpenFOAM
+
+echo
+echo "    Compiling OpenFOAM library"
+echo
+
+required_OpenFOAM_version="v2312"
+
+if check_openfoam; then
+    echo "The required OpenFOAM version $required_OpenFOAM_version is already compiled, proceeding with other libraries."
+else
+    read -p "Is OpenFOAM version $required_OpenFOAM_version compiled at you machine? (y/n) " source_response
+    if [ "$source_response" == "y" ]; then
+        echo "Please source OpenFOAM version $required_OpenFOAM_version then run this script again"
+        exit 1
+    else
+        echo "Compiling OpenFOAM..."
+        echo
+        echo
+        cd OpenFOAM
+        source etc/bashrc
+        cp -r ../local_dependencies/* $WM_THIRD_PARTY_DIR
+        cd $WM_THIRD_PARTY_DIR
+        ./makeCCMIO
+        ./makeFFTW
+        cd $FOAM_SRC/..
+        ./Allwmake $@
+        cd ..
+    fi
+fi
+
+# hisa
+
+echo
+echo "    Compiling hisa library"
+echo
+
+required_hisa_version="1.11.2"
+
+hisa_version=$(hisa -version | grep ^hisa | awk '{print $2}')
+
+    if [ -z "$hisa_version" ]; then
+        echo "hisa is not compiled."
+        echo "Compiling hisa..."
+        cd hisa/
+        ./Allwmake $@
+        cd ..
+    elif [ "$hisa_version" != "$required_hisa_version" ]; then
+        echo "hisa version $hisa_version is compiled, but version $required_hisa_version is required."
+        echo "Compiling hisa..."
+        cd hisa/
+        ./Allwmake $@
+        cd ..
+    else
+        echo "hisa version $hisa_version is already compiled."
+    fi
+
+# TIOGA
+
+echo
+echo "    Compiling tioga library"
+echo
+
+tioga_library_availability=$(foamHasLibrary -verbose libtioga 2>&1)
+
+    if [[ "$tioga_library_availability" == 'Can load "libtioga"' ]]; then
+        echo "tioga library is already compiled."
+    else
+        echo "Compiling tioga ..."
+        echo
+        # do some minor modifications to the library before compilation
+        patch -u tioga/CMakeLists.txt -i tiogaMod1.patch
+        patch -u tioga/src/highOrder.C -i tiogaMod2.patch
+	patch -u tioga/src/utils.c -i tiogaMod3.patch
+        cd tioga
+# To let the above two patches ignored by git status
+git update-index --assume-unchanged CMakeLists.txt
+git update-index --assume-unchanged src/highOrder.C
+git update-index --assume-unchanged src/utils.c
+#
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install ..
+        make && make install
+
+        #echo "\nCopy the libtioga.so to $FOAM_USER_LIBBIN\n"
+        cp install/lib/libtioga.so $FOAM_USER_LIBBIN
+        cd ../..
+    fi
+

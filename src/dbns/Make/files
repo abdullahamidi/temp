@@ -1,0 +1,7 @@
+
+dbnsFlux/ausmPlusUpTams/ausmPlusUpTamsFluxScheme.C
+dbnsFlux/roe/roeFluxScheme.C
+jacobians/jacobianInviscid/laxFriedrichsTams/laxFriedrichsTams.C
+
+LIB = $(FOAM_USER_LIBBIN)/libdbnsTams
+

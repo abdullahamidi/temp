@@ -1,0 +1,7 @@
+
+fields/fvPatchFields/derived/movingWallMRFVelocity/movingWallMRFVelocityFvPatchVectorField.C
+fields/fvPatchFields/derived/movingWallSlipTams/movingWallSlipTamsFvPatchVectorField.C
+interpolation/surfaceInterpolation/limitedSchemes/wPureFirstOrder/wPureFirstOrder.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfiniteVolumeTams
+

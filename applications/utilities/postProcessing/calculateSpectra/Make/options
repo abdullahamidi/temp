@@ -1,0 +1,10 @@
+EXE_INC = \
+    $(FOAM_VERSION) \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/OpenFOAM/lnInclude \
+    -I../../../../src/functionObjects/lnInclude \
+
+EXE_LIBS = \
+    -lOpenFOAM \
+    -L$(FOAM_USER_LIBBIN) \
+    -loscfdFunctionObjects

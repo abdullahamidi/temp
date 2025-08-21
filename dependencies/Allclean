@@ -1,0 +1,24 @@
+#! /bin/sh
+
+
+
+cd hisa
+./Allclean
+cd ..
+
+cd OpenFOAM
+wclean all
+cd ..
+
+cd ThirdParty-common
+./Allclean
+cd ..
+
+#echo "Cleaning tioga library"
+
+ cd tioga
+# ./clean.sh; rm -rf build;
+ git clean -dfx
+
+ cd ../
+

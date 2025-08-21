@@ -1,0 +1,20 @@
+#! /bin/bash
+
+source ./settings
+
+HOMEDIR=`pwd`
+
+cat $CONFIG_FILE | while read LINE; do
+    if [ `echo $LINE | cut -c 1` == "#" ]; then continue; fi 
+    echo $LINE | 
+    ( 
+	#Read options
+	read SEQ FILL FREQ AMP
+
+	#Copy data dir
+	DEST_DIR=$SOURCE_DIR\_$SEQ
+	rm -rf $DEST_DIR
+    )
+done
+
+

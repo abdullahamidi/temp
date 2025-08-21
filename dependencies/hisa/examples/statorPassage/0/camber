@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2206                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+version 2.0;
+format ascii ;
+class volVectorField ;
+location "0";
+object camber ;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+dimensions [0 0 0 0 0 0 0];
+internalField #codeStream
+{
+codeInclude
+#{
+# include </usr/include/CGAL/Exact_predicates_inexact_constructions_kernel.h>
+# include </usr/include/CGAL/Delaunay_triangulation_2.h>
+# include </usr/include/CGAL/Interpolation_traits_2.h>
+# include </usr/include/CGAL/natural_neighbor_coordinates_2.h>
+# include </usr/include/CGAL/interpolation_functions.h>
+# include "fvCFD.H"
+# include <IFstream.H>
+# include <OFstream.H>
+# include <ctime>
+# include "clock.H"
+# include "string.H"
+# include <sstream>
+# include <iomanip>
+# include <cmath>
+#};
+codeOptions
+#{
+-I$(LIB_SRC)/finiteVolume/lnInclude \
+-I$(LIB_SRC)/meshTools/lnInclude
+#};
+codeLibs
+#{
+-lmeshTools \
+-lfiniteVolume
+#};
+code
+#{
+const IOdictionary & d = static_cast < const IOdictionary &>(dict);
+const fvMesh& mesh = refCast < const fvMesh >(d.db());
+vectorField camber(mesh.nCells() , vector(0,0,0));
+typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+typedef CGAL::Delaunay_triangulation_2<K> Delaunay_triangulation;
+typedef K::FT Coord_type;
+typedef K::Point_2 Point;
+typedef std::map<Point , Coord_type , K::Less_xy_2> Coord_map;
+Delaunay_triangulation Tnx , Tnth , Tnr; 
+Coord_map value_nx , value_nth , value_nr; 
+List <vector > nx_data , nth_data , nr_data;
+IFstream nx("nx_data");
+nx >> nx_data;
+IFstream nth("nth_data");
+nth >> nth_data;
+IFstream nr("nr_data");
+nr >> nr_data;
+forAll(camber , i)
+{
+camber[i] = vector(0.0 , 1.0 , 0.0);
+}
+camber.writeEntry("", os);
+#};
+};
+boundaryField
+{
+"(hub|shroud)"
+{
+type slip ;
+}
+inlet
+{
+type fixedValue ;
+value uniform (0 0 0);
+}
+outlet
+{
+type zeroGradient ;
+}
+    frontAndBack_left
+    {
+        type            wedge;
+    }
+    frontAndBack_right
+    {
+        type            wedge;
+    }
+}
+
+// ************************************************************************* //

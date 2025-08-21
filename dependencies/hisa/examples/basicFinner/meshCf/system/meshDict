@@ -1,0 +1,106 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  3.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     4.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      meshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+surfaceFile "combined.fms";
+
+maxCellSize       0.225;
+boundaryCellSize  0.225;
+
+surfaceMeshRefinement
+{
+    body
+    {
+        additionalRefinementLevels  8;
+        surfaceFile "constant/triSurface/bodyScaled.stl";
+        refinementThickness 0.005;
+    }
+}
+
+localRefinement
+{
+    body
+    {
+        additionalRefinementLevels  7;
+        refinementThickness 0.015;
+    }
+}
+
+objectRefinements
+{
+    cyl1
+    {
+        additionalRefinementLevels 6;
+        type cone;
+        p0  (0.03 0 0);
+        p1  (-0.45 0 0);
+        radius0  0.05;
+        radius1  0.05;
+    }
+    cyl2
+    {
+        additionalRefinementLevels 5;
+        type cone;
+        p0  (0.05 0 0);
+        p1  (-0.6 0 0);
+        radius0  0.1;
+        radius1  0.1;
+    }
+    cyl3
+    {
+        additionalRefinementLevels 4;
+        type cone;
+        p0  (0.1 0 0);
+        p1  (-0.8 0 0);
+        radius0  0.2;
+        radius1  0.2;
+    }
+    cyl4
+    {
+        additionalRefinementLevels 3;
+        type cone;
+        p0  (0.2 0 0);
+        p1  (-1.0 0 0);
+        radius0  0.4;
+        radius1  0.4;
+    }
+}
+
+boundaryLayers
+{
+
+    patchBoundaryLayers
+    {
+        // "(store)" - cfMesh does seem to accept this notation
+        "body"
+        {
+            nLayers 10;
+            thicknessRatio 1.05;
+        }
+    }
+
+    optimiseLayer 1;
+
+    optimisationParameters
+    {
+        nSmoothNormals 7;
+        maxNumIterations 7;
+        featureSizeFactor 0.6;
+        reCalculateNormals 1;
+        relThicknessTol 0.1;
+    }
+}

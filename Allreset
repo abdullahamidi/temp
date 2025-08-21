@@ -1,0 +1,28 @@
+#! /bin/sh
+
+git reset --hard
+git clean -dfx
+
+cd dependencies
+
+cd hisa
+git reset --hard
+git clean -dfx
+cd ..
+
+cd OpenFOAM
+git reset --hard
+git clean -dfx
+cd ..
+
+cd ThirdParty-common
+git reset --hard
+git clean -dfx
+cd ..
+
+cd tioga
+git reset --hard
+git clean -dfx
+cd ..
+
+cd ..

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+source ../settings.sh
+
+runCommand()
+{
+    if [ "$1" == "mpirun" ]; then sol=$4; else sol=$1; fi
+    if [ -f log.$sol ]; then rm log.$sol; fi
+    "$@" 1> >(tee -a log.$sol) 2> >(tee -a log.$sol >&2)
+    err=$?
+    if [ ! $err -eq 0 ]; then exit $err; fi
+}
+
+# Set up farfield
+surfaceTransformPoints -scale "($bbSX $bbSY $bbSZ)" constant/triSurface/cube.stl constant/triSurface/temp.stl
+surfaceTransformPoints -translate "($bbCX $bbCY $bbCZ)" constant/triSurface/temp.stl constant/triSurface/farfield.stl
+rm constant/triSurface/temp.stl
+
+./renameSTL.sh
+
+# Scale parts
+for i in "${parts[@]}"
+do
+    surfaceTransformPoints -scale "($pScale $pScale $pScale)" constant/triSurface/$i.stl constant/triSurface/temp1.stl
+    surfaceTransformPoints -translate "($pTransX $pTransY $pTransZ)" constant/triSurface/temp1.stl constant/triSurface/temp2.stl
+    surfaceTransformPoints -yawPitchRoll "($pYaw $pPitch $pRoll)" constant/triSurface/temp2.stl constant/triSurface/$i\Scaled.stl
+    rm constant/triSurface/temp1.stl
+    rm constant/triSurface/temp2.stl
+done
+
+# Combine STL files
+./combineSTL.sh
+
+# # Extract feature edges (inverse from snappy, therefor must smaller than 90)
+# runCommand surfaceFeatureEdges -angle 50 constant/triSurface/combined.stl combined.fms
+# runCommand cartesianMesh
+# 
+# # Update patch types
+# runCommand changeDictionary
+# runCommand checkMesh

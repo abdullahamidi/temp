@@ -1,0 +1,10 @@
+turbulentKineticEnergySpectra/turbulentKineticEnergySpectra.C
+intakeDistortion/intakeDistortion.C
+centerOfMass/centerOfMass.C
+sloshingTank/sloshingTank.C
+utility/probeData/probeData.C
+utility/signalProcess/signalProcess.C
+filteredVolumeField/filteredVolumeField.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/liboscfdFunctionObjects

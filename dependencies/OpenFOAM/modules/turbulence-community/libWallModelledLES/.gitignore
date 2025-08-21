@@ -1,0 +1,61 @@
+# Prerequisites
+**.d
+
+# Compiled Object files
+**.slo
+**.lo
+**.o
+**.obj
+
+# Precompiled Headers
+**.gch
+**.pch
+
+# Compiled Dynamic libraries
+**.so
+**.dylib
+**.dll
+
+# Fortran module files
+**.mod
+**.smod
+
+# Compiled Static libraries
+**.lai
+**.la
+**.a
+**.lib
+
+# Executables
+**.exe
+**.out
+**.app
+
+# Netbeans IDE project files
+nbproject/
+
+lnInclude/
+
+**.dep
+**.swp
+**.swo
+
+**/Make/*
+/Make/linux64IccDPInt32Opt
+**/processor*
+/docs/html
+/docs/api
+/docs/xml
+/docs/DTAGS
+/docs/build
+/docs/_build
+!**/Make/files
+!**/Make/options
+versionRules/foamVersion4wmles.H
+versionRules/foamVersion
+foamVersionThisIsCompiledFor
+.vscode/
+
+tests/integrationTests/testIntegration
+tests/testCases/channel_flow/0.01
+

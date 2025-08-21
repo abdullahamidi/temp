@@ -1,0 +1,13 @@
+*.o
+*.a
+build*
+case/*.dat
+case/fort*
+case/grid/*.plt
+install*
+
+
+GPATH
+GRTAGS
+GTAGS
+

@@ -1,0 +1,17 @@
+#! /bin/bash
+
+source ./settings
+
+THIS_DIR=`pwd`
+
+cat $CONFIG_FILE | while read SEQ REST_OF_LINE; do
+    if [ `echo $SEQ | cut -c 1` == "#" ]; then continue; fi 
+    DEST_DIR=$SOURCE_DIR\_$SEQ
+    cd $DEST_DIR
+    echo Submitting from $DEST_DIR
+
+    # Workstation
+    . ./$RUN_SCRIPT < /dev/null; # Don't gobble stdin
+
+    cd $THIS_DIR
+done

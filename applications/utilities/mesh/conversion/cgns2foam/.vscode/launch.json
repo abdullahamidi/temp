@@ -1,0 +1,208 @@
+{
+  // ... existing code ...
+  "configurations": [
+    {
+      "name": "Debug Bundle",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "dependency.py",
+      "args": ["--bundle"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug unbundle",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "dependency.py",
+      "args": ["--unbundle"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug cgns2foam convert ANSYS_7.5M",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/ANSYS_7.5M.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert ccm_subsonic_flow_naca_type_intake",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/ccm_subsonic_flow_naca_type_intake.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert fluent_generic_fighter",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/fluent_generic_fighter.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert ICEM_CGNS2",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/ICEM_CGNS2.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+
+    {
+      "name": "Debug cgns2foam convert s-duct",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/s-duct.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert Pipe",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/Pipe.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Test cgns2foam convert ICEM_CGNS2",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Release/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/ICEM_CGNS2.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert icem_generic_fighter_5m",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/icem_generic_fighter_5m.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+
+    {
+      "name": "Debug cgns2foam convert pointwise_cgns_export_generic_fighter",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/pointwise_cgns_export_generic_fighter.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam convert polymesh",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "convert",
+        "--input",
+        "assets/polymesh.cgns",
+        "--output",
+        "./.test_output"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    },
+    {
+      "name": "Debug cgns2foam list-boundaries",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/Debug/cgns2foam",
+      "args": [
+        "list-boundaries",
+        "--input",
+        "assets/pointwise_cgns_export_generic_fighter.cgns"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false
+    }
+  ]
+}

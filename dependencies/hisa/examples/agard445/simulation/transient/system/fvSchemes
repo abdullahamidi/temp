@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+fluxScheme           AUSMPlusUp;
+lowMachAusm          false;
+
+ddtSchemes
+{
+    // Time stepping - second order backward difference
+    default         dualTime rPseudoDeltaT backward;
+    // Time stepping - second order (beta = 1) / first order implicit (beta = 0)
+    //default         dualTime rPseudoDeltaT CrankNicolson 0.9;
+}
+
+gradSchemes
+{
+    default          faceLeastSquares linear;
+}
+
+divSchemes
+{
+    default          none;
+}
+
+laplacianSchemes
+{
+    default          Gauss linear corrected;
+    laplacian(diffusivity,cellDisplacement) Gauss linear orthogonal;
+}
+
+interpolationSchemes
+{
+    default          linear;
+    reconstruct(rho) wVanLeer;
+    reconstruct(U)   wVanLeer;
+    reconstruct(T)   wVanLeer;
+}
+
+snGradSchemes
+{
+    default          corrected;
+}
+
+
+// ************************************************************************* //

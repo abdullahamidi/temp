@@ -1,0 +1,22 @@
+// How often to refine
+refineInterval  46; // Gives the longest time after the last refine at tfinal = 500
+// Specifies field written by function object
+field           refinementControl;
+// Refine field inbetween lower..upper (refinementControl=1)
+lowerRefineLevel 0.5;
+upperRefineLevel 1.5;
+// If value < unrefineLevel unrefine (refinementControl=-1)
+unrefineLevel   -0.5;
+// For slower than 2:1 refinement
+nBufferLayers   2;
+// Refine cells only up to maxRefinement level (absolute)
+maxRefinement   8;
+// Stop refinement if maxCells reached
+maxCells        2000000000;
+correctFluxes
+(
+   (phi none)
+);
+// Write refinement level to a scalar field
+dumpLevel true;
+

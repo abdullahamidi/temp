@@ -1,0 +1,107 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2206                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "include/controlvars"
+
+application     hisa;
+
+startFrom       latestTime;
+
+startTime       $starttime;
+
+stopAt          endTime;
+
+endTime         $endtime;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   $writeinterval;
+
+purgeWrite      2;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+functions
+{
+
+turbulenceFields1
+{
+    type            turbulenceFields;
+    libs            (fieldFunctionObjects);
+    fields          (R devRhoReff L muEff);
+    region          region0;
+    enabled         true;
+    log             true;
+    timeStart       $starttime;
+    timeEnd         $endtime;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   $writeinterval;
+}
+MachNo1
+{
+    type            MachNo;
+    libs            (fieldFunctionObjects);
+    timeStart       $starttime;
+    timeEnd         $endtime;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   $writeinterval;
+}
+
+wallShearStress1
+{
+    type            wallShearStress;
+    libs            (fieldFunctionObjects);
+    patches         (hub shroud); 
+    writeToFile     true;
+    timeStart       $starttime;
+    timeEnd         $endtime;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   $writeinterval;
+}
+volFieldValue1
+{
+    type            writeObjects;
+    libs            (utilityFunctionObjects);
+    fields          (rhoR rhoU rhoE);
+    writeToFile     true;
+    timeStart       $starttime;
+    timeEnd         $endtime;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   $writeinterval;
+}
+}
+
+// ************************************************************************* //

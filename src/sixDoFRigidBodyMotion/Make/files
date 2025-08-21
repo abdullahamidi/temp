@@ -1,0 +1,5 @@
+
+sixDoFRigidBodyMotion/restraints/ejectorExternalForce/ejectorExternalForce.C
+sixDoFRigidBodyMotion/restraints/propulsionExternalForce/propulsionExternalForce.C
+
+LIB = $(FOAM_USER_LIBBIN)/libsixDoFRigidBodyMotionTams

@@ -1,0 +1,22 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+
+forces
+{
+    type           forces;
+    libs           ( "libforces.so" );
+    patches        ( body fin1 fin2 fin3 fin4 );
+    rho            rho;
+    log            off;
+    writeControl   timeStep;
+    writeInterval  1;
+    CofR           (0 0 0);
+}
+
+
+// ************************************************************************* //

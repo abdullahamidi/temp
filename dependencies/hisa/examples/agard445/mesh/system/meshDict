@@ -1,0 +1,105 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                |
+| \\      /  F ield         | cfMesh: A library for mesh generation          | 
+|  \\    /   O peration     |                                                |
+|   \\  /    A nd           | Author: Franjo Juretic                         | 
+|    \\/     M anipulation  | E-mail: franjo.juretic@c-fields.com            |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version   2.0;
+    format    ascii;
+    class     dictionary;
+    location  "system";
+    object    meshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+surfaceFile "constant/wingBlock.ftr";
+
+// maxCellSize 0.45;
+// maxCellSize 0.4;
+maxCellSize 0.4;
+
+localRefinement
+{
+//    "(body|wB_0|wB_1|wB_2|wB_3|wB_4)"
+    wB_0
+    {
+        additionalRefinementLevels 6;
+        refinementThickness 0.04;
+    }
+    wB_1
+    {
+        additionalRefinementLevels 6;
+        refinementThickness 0.04;
+    }
+    wB_2
+    {
+        additionalRefinementLevels 6;
+        refinementThickness 0.04;
+    }
+    wB_3
+    {
+        additionalRefinementLevels 6;
+        refinementThickness 0.04;
+    }
+    wB_4
+    {
+        additionalRefinementLevels 6;
+        refinementThickness 0.04;
+    }
+}
+
+surfaceMeshRefinement
+{
+    wing
+    {
+        additionalRefinementLevels  8;
+        surfaceFile "gmsh/64a004.stl";
+//        refinementThickness 0.002;
+    }
+}
+
+edgeMeshRefinement
+{
+    edge
+    {
+        edgeFile "constant/edges_featureEdges.vtk";
+//        cellSize 0.004;
+        additionalRefinementLevels 8;
+        //refinementThickness 0.002;
+//         cellSize 0.001;
+//         refinementThickness 0.0005;
+    }
+}
+
+anisotropicSources{}
+
+boundaryLayers
+{
+    patchBoundaryLayers
+    {
+        "(wB_0|wB_1|wB_2|wB_3|wB_4)"
+        {
+            nLayers 1; // Boundary layer cause stability issues with Euler runs
+//             nLayers 4;
+            thicknessRatio 1.1;
+        }
+    }
+
+    optimiseLayer 1;
+
+    optimisationParameters
+    {
+        nSmoothNormals 3;
+        maxNumIterations 2;
+        featureSizeFactor 0.4;
+        reCalculateNormals 1;
+        relThicknessTol 0.1;
+    }
+}
+
+// ************************************************************************* //

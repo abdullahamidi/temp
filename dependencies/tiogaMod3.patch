@@ -1,0 +1,16 @@
+diff --git a/src/utils.c b/src/utils.c
+index 523decf..98ffd15 100644
+--- a/src/utils.c
++++ b/src/utils.c
+@@ -100,6 +100,11 @@ void findOBB(double *x,double xc[3],double dxc[3],double vec[3][3],int nnodes)
+   aa[1]=aa[3];
+   aa[2]=aa[6];
+   aa[5]=aa[7];
++//Serhat: Stabilizing the matrix diagonal
++  aa[0] += 1e-8;
++  aa[4] += 1e-8;
++  aa[8] += 1e-8;
++//
+   //
+   // use kaisers method to estimate
+   // eigen values and vectors of the covariance matrix

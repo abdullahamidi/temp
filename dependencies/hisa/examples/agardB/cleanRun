@@ -1,0 +1,18 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+
+cd simulation
+rm -rf 0
+cleanCase
+
+cd  ../post
+rm -r data/*
+rm -r plots/*
+rm convRes.png moment.png normal.png
+rm forceCoeffsBase.dat aeroNormAxial.dat
+rm nicePlot.pyc
+cd ..
+

@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cd tamsAeroModule
+wclean
+cd ..
+wclean

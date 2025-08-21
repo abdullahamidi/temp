@@ -1,0 +1,70 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  4.x                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      createPatchDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pointSync false;
+
+// Patches to create.
+patches
+(
+    {
+        name symmetry;
+        patchInfo
+        {
+            type empty;
+        }
+        constructFrom patches;
+        patches ( "patch_1_.*" );
+    }
+
+    {
+        name farField;
+        patchInfo
+        {
+            type patch;
+        }
+        constructFrom patches;
+        patches ( "patch_2_.*" );
+    }
+
+    {
+        name fluidToSolid;
+        patchInfo
+        {
+//            type wall;
+            type mappedWall;
+            sampleMode      nearestPatchFace;
+            sampleRegion    solid;
+            samplePatch     solidToFluid;
+        }
+        constructFrom patches;
+        patches ( "patch_3_.*" );
+    }
+
+    {
+        name defaultFaces;
+        patchInfo
+        {
+            type patch;
+        }
+        constructFrom patches;
+        patches ( "patch_0_.*" );
+    }
+
+
+);
+
+
+// ************************************************************************* //

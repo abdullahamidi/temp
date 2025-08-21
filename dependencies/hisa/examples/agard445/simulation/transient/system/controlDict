@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+    class           dictionary;
+    location        "system";
+    object          controlDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application       hisa;
+
+startFrom         startTime;
+
+startTime         0;
+
+stopAt            endTime;
+
+endTime           5e-1;
+
+deltaT            5e-4;      // Soft start up
+
+adjustTimeStep    yes;
+
+maxCo             20000.0;
+
+maxDeltaT         2e-3;      // Mode 2 period ~ 2.5e-2
+
+writeControl      adjustableRunTime;
+
+writeInterval     1e-2; 
+
+purgeWrite        5;
+
+writeFormat       ascii;
+
+writePrecision    8;
+
+timeFormat        general;
+
+timePrecision     6;
+
+graphFormat       raw;
+
+runTimeModifiable yes;
+
+libs
+(
+    "libOpenFOAM.so"
+    "libmodal.so"
+);
+
+functions
+{
+    modalMotion
+    {
+        type                modalSolver;
+        libs                ("libmodal.so");
+        writeControl        timeStep;
+        writeInterval       1;
+        patches             (wing);
+        steadyState         off;
+        #include "../constant/modal/massMatrix"
+        #include "../constant/modal/dampingMatrix"
+        #include "../constant/modal/stiffnessMatrix"
+        pName               p;
+        UName               U;
+        rhoName             rho;
+        log                 true;
+    }
+
+    forces
+    {
+        type                forces;
+        libs                ("libforces.so");
+        writeControl        timeStep;
+        writeInterval       1;
+
+        patches             ( wing );
+        pName               p;
+        UName               U;
+        rhoName             rho;
+        log                 true;
+
+        CofR                (0 0 0); // Update
+    }
+
+}
+
+// ************************************************************************* //

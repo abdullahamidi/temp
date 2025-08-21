@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Clone the bundle for each submodule
+
+cd bundles
+for part_file in *.bundle.part01; do
+  file="${part_file%.part01}"
+  cat $file.* > $file
+done
+cd ..
+
+git clone bundles/OpenFOAM.bundle dependencies/OpenFOAM
+
+git clone bundles/ThirdParty-common.bundle dependencies/ThirdParty-common
+
+git clone bundles/hisa.bundle dependencies/hisa
+
+git clone bundles/tioga.bundle dependencies/tioga
+
+git clone bundles/cgns2foam.bundle applications/utilities/mesh/conversion/cgns2foam
+
+
+

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+SRCDIR=fixed
+DSTDIR=transient
+
+cd $SRCDIR
+
+TLAST=$(foamListTimes -latestTime)
+echo Final time: $TLAST
+
+cd ../$DSTDIR
+
+foamCleanTutorials
+
+if [ -d ../$SRCDIR/$TLAST/polyMesh ]
+then
+    LASTMESH=$TLAST
+else
+    LASTMESH=constant
+fi
+
+if [ -z "$FOAM_API" ] && ( [ "$WM_PROJECT_VERSION" == "dev" ] || [ "$WM_PROJECT_VERSION" -ge "10" ] )
+then
+    echo "type internal;" > 0.org/include/helperPatchFieldType
+else
+    echo "type fixedValue;" > 0.org/include/helperPatchFieldType
+fi
+
+echo 'Copying mesh and final time'
+
+cd ../$SRCDIR
+
+rm -rf ../$DSTDIR/constant/polyMesh
+cp -r $LASTMESH/polyMesh ../$DSTDIR/constant/
+rm -rf ../$DSTDIR/0
+cp -r ../$DSTDIR/0.org ../$DSTDIR/0
+cp -r $TLAST/* ../$DSTDIR/0/
+rm -rf ../$DSTDIR/0/polyMesh
+rm -f ../$DSTDIR/0/uniform/time
+
+# Change slip to movingWallSlip
+sed -i 's/slip;/movingWallSlip;/' ../$DSTDIR/0/U
+
+# Perturb modal velocity
+sed -i s/^velocities.*/velocities\ 3\(0.004\ 0.0\ 0.0\)\;/ ../$DSTDIR/0/uniform/modalVariables
+
+# Bootstrap dummy files
+mkdir ../$DSTDIR/constant/modal
+touch ../$DSTDIR/constant/modal/modeShapes
+
+cd ../$DSTDIR
+
+
+# Generate mode shapes
+cd ..
+./genModeShape
+cd $DSTDIR
+
+# Parallel ............................
+runApplication decomposePar
+mpirun -n `getNumberOfProcessors` `getApplication` -parallel 2>&1 | tee log.hisa
+
+# -----------------------------------------------------------------%
+

@@ -1,0 +1,54 @@
+include ../../../../../dependencies/hisa/buildDefs.include
+
+EXE_INC = -g \
+    $(FOAM_VERSION) \
+    -I../../../../../dependencies/hisa/src/modules/solver/lnInclude \
+    -I../../../../../dependencies/hisa/src/modules/hisa/lnInclude \
+    -I../../../../../dependencies/hisa/src/finiteVolume/jacobians/jacobianMatrix \
+    -I../../../../../dependencies/hisa/src/solvers/lnInclude \
+    -I../../../../../dependencies/hisa/src/preconditioners/lnInclude \
+    -I../../../../../dependencies/hisa/src/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
+    $(TURB_INC) \
+    -I$(LIB_SRC)/dynamicFvMesh/lnInclude \
+    -I$(LIB_SRC)/dynamicMesh/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/parallel/decompose/decompositionMethods/lnInclude \
+    -I$(LIB_SRC)/overset/lnInclude \
+    -I../../../../../src/dbns/lnInclude \
+    -I../../../../../src/dynamicMesh/lnInclude \
+    -I../../../../../src/finiteVolume/lnInclude \
+    -I../../../../../src/OpenFOAM/lnInclude \
+    -I../../../../../src/overset/lnInclude \
+    -I../../../../../src/sixDoFRigidBodyMotion/lnInclude \
+    -I../../../../../src/TurbulenceModels/lnInclude \
+    -I../../../../../src/fvOptions/lnInclude
+
+LIB_LIBS = \
+    -lfiniteVolume \
+    $(TURB_LIBS) \
+    -lspecie \
+    -ldynamicFvMesh \
+    -ldynamicMesh \
+    -ltopoChangerFvMesh \
+    -lmeshTools \
+    -ldecompositionMethods \
+    -L$(FOAM_LIBBIN)/dummy -lptscotchDecomp \
+    -L$(FOAM_USER_LIBBIN) \
+    -lhisaFiniteVolume \
+    -lhisaPreconditioners \
+    -lhisaSolvers \
+    -lhisaModule\
+    -lsolverModule \
+    -lhisaFunctionObjects \
+    -loverset \
+    -ldbnsTams \
+    -ldynamicMeshTams \
+    -lfiniteVolumeTams \
+    -lOpenFOAMTams \
+    -loversetTams \
+    -lsixDoFRigidBodyMotionTams \
+    -lturbulenceModelsTams \
+    -lfvOptionsTams

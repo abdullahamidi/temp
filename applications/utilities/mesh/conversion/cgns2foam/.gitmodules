@@ -1,0 +1,9 @@
+[submodule "boost"]
+	path = .deps/boost
+	url = https://github.com/boostorg/boost.git
+[submodule "cgns"]
+	path = .deps/cgns
+	url = https://github.com/CGNS/CGNS.git
+[submodule "hdf5"]
+	path = .deps/hdf5
+	url = https://github.com/HDFGroup/hdf5.git

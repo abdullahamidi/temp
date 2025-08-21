@@ -1,0 +1,22 @@
+CompileFlags:
+  Remove: 
+    - --extended-lambda
+    - -forward-unknown-to-host-compiler
+    - -ccbin*
+    - --generate-code*
+    - -std=*,
+    - -Xcompiler=-fPIE
+    - -expt-relaxed-constexpr
+  Add: 
+    - -std=c++2b
+
+---
+
+If:
+  PathMatch: 
+    - ".*\\.cu$"
+    - ".*\\.cuh$"
+CompileFlags:
+  Add: 
+    - --cuda-gpu-arch=sm_70
+    - -xcuda

@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+|                                                                             |
+|    HiSA: High Speed Aerodynamic solver                                      |
+|    Copyright (C) 2014-2017 Johan Heyns - CSIR, South Africa                 |
+|    Copyright (C) 2014-2017 Oliver Oxtoby - CSIR, South Africa               |
+|                                                                             |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// OpenCFD:
+
+dynamicFvMesh    dynamicRefineFvMesh;
+
+dynamicRefineFvMeshCoeffs
+{
+    #include "dynamicRefinement"
+
+    rebalance yes;
+    maxLoadImbalance 0.1;
+}
+
+
+// Foundation:
+
+topoChanger
+{
+    type refiner;
+
+    #include "dynamicRefinement"
+}
+
+distributor
+{
+    type            distributor;
+
+    libs            ("libfvMeshDistributors.so");
+
+    // How often to redistribute
+    redistributionInterval  1;
+
+    // Maximum fractional cell distribution imbalance
+    // before rebalancing
+    maxImbalance    0.1;
+}
+
+// ************************************************************************* //

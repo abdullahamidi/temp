@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# This step is necessary if any of the submodules has been changed
+# Make sure that the submodules have been initialized first
+# using: git submodule update --init --recursive
+
+# Create a bundle for each submodule
+rm bundles/*
+
+cd dependencies
+
+cd OpenFOAM
+git bundle create OpenFOAM.bundle --all
+mv OpenFOAM.bundle ../../bundles
+cd ..
+
+cd ThirdParty-common
+git bundle create ThirdParty-common.bundle --all
+mv ThirdParty-common.bundle ../../bundles
+cd ..
+
+cd hisa
+git bundle create hisa.bundle --all
+mv hisa.bundle ../../bundles
+cd ..
+
+cd tioga
+git bundle create tioga.bundle --all
+mv tioga.bundle ../../bundles
+cd ..
+
+cd ..
+
+cd applications/utilities/mesh/conversion/cgns2foam
+git bundle create cgns2foam.bundle --all
+mv cgns2foam.bundle ../../../../../bundles
+cd ../../../../..
+
+
+cd bundles
+for file in *.bundle; do
+  split -b 250M --numeric-suffixes=1 --suffix-length=2 "$file" "${file}.part"
+  rm $file
+done
+

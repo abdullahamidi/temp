@@ -1,0 +1,23 @@
+#-----------------------------------#
+# seq  mach  temp  press  AoA turb
+#-----------------------------------#
+# The values specified below is the 
+# total pressure and temperature, 
+# the static or freestream conditions 
+# are computed in the setupDir script
+#-----------------------------------#
+#
+SA0   0.8 315  60000    0   SpalartAllmaras
+SA4   0.8 315  60000    4   SpalartAllmaras
+SA8   0.8 315  60000    8   SpalartAllmaras
+SA12  0.8 315  60000    12  SpalartAllmaras
+SA14  0.8 315  60000    14  SpalartAllmaras
+SA17  0.8 315  60000    17  SpalartAllmaras
+SA20  0.8 315  60000    20  SpalartAllmaras
+kw8   0.8 315  60000    8   kOmegaSST
+kw12  0.8 315  60000    12  kOmegaSST
+kw14  0.8 315  60000    14  kOmegaSST
+kw17  0.8 315  60000    17  kOmegaSST
+kw20  0.8 315  60000    20  kOmegaSST
+#
+#-----------------------------------#

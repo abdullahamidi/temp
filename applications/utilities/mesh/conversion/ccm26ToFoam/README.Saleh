@@ -1,0 +1,6 @@
+- to compile the ccm26ToFoam utility under the ESI version (tested at v1912)
+  - source the openfoam env.
+  - export the following variable:
+        export LIBCCMIO_LIB_DIR=/$(pwd)/libccmio-2.6.1/lib
+  - compile (wclean;  wmake)
+  - copy the binary files from libccmio-2.6.1/lib to your FOAM_USER_LIBBIN 

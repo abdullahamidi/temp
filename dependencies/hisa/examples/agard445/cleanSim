@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd simulation
+
+./cleanSimFixed
+./cleanSimTransient
+
+cd ..
+
+# ----------------------------------------------------------------- end-of-file

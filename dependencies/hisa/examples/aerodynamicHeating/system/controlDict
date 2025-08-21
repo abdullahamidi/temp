@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  4.x                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     multiRegionSolver;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+deltaT          0.0001;
+
+endTime         1.0;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.01;
+
+purgeWrite      0;
+
+adjustTimeStep  no;
+
+
+writeFormat     ascii;
+
+writePrecision  8;
+
+
+runTimeModifiable true;
+
+libs
+(
+);
+
+regions
+{
+    fluid
+    {
+        solver hisa;
+        libs ( "libhisaModule.so" );
+    }
+    solid
+    {
+        solver thermalSolid;
+        libs ( "libthermalSolidModule.so" );
+    }
+}
+
+
+functions
+{
+    wallHeatFlux
+    {
+        type     wallHeatFlux;
+        libs     ( "libfieldFunctionObjects.so" );
+        writeControl writeTime;
+        region   solid;
+        patches  ( solidToFluid );
+        kappaMethod solidThermo;
+    }
+}
+
+
+// ************************************************************************* //

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Warning: disabled for now (compilation issues)"
+
+# ---------------------------------------------------------------------------

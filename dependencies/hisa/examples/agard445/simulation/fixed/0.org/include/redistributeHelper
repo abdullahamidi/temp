@@ -1,0 +1,13 @@
+    // This is a zero-sized patch field created to
+    // facilitate parallel mesh distribution.
+    // Processor faces are temporarily added to the last
+    // non-empty, non-coupled patch during this process,
+    // and this causes potential difficulties for derived
+    // patch types (specifically, mixed).
+
+    redistributeHelper
+    {
+        type        internal;
+        value       $internalField;
+    }
+

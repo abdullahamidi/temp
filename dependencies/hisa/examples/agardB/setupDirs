@@ -1,0 +1,121 @@
+#! /bin/bash
+
+source ./settings
+
+HOMEDIR=`pwd`
+
+cd $SOURCE_DIR
+  ./cleanSim
+cd $HOMEDIR
+
+
+cat $CONFIG_FILE | while read LINE; do
+    if [ `echo $LINE | cut -c 1` == "#" ]; then continue; fi 
+    echo $LINE | 
+    ( 
+        #Read options
+        read SEQ MACH TEMP PRESS AOA TURB
+
+        #Copy data dir
+        DEST_DIR=$SOURCE_DIR\_$SEQ
+        rm -rf $DEST_DIR	
+
+        echo Copying to $DEST_DIR ........................
+        mkdir $DEST_DIR
+        cp -r $SOURCE_DIR/*   $DEST_DIR
+
+        echo - Setting turbulence
+        sed -i "s/\(RASModel *\).*;/\\1$TURB;/" $DEST_DIR/constant/turbulenceProperties
+
+        # Isotropic flow, see www.grc.nasa.gov/www/BGH/isentrop.html
+        # Use python for floating point operations
+        # NOTE: bc seems to be slightly inaccurate with trig operations
+        # and can only compute a^b when b is an integer
+        MC=$(echo "print 1.+($GAMMA-1.)/2.*$MACH*$MACH" | python)
+        TEMP=$(echo "import math; print $TEMP*math.pow($MC,-1)" | python)
+        GC=$(echo "print -$GAMMA/($GAMMA-1.)" | python)
+        PRESS=$(echo "import math; print $PRESS*math.pow($MC,$GC)" | python)
+        RHO=$(echo "print $PRESS/($R*$TEMP)" | python)
+        
+        C=$(echo "scale=8;sqrt($GAMMA*$R*$TEMP)" | bc)
+        VELC=$(echo "scale=8;$C*$MACH" | bc)
+        COS=$(echo "import numpy as np; print np.cos($AOA/180.*$PI)" | python)
+        SIN=$(echo "import numpy as np; print np.sin($AOA/180.*$PI)" | python)
+        VELCX=$(echo "print $VELC*$COS" | python)
+        VELCY=$(echo "print $VELC*$SIN" | python)
+
+        echo - Setting force directions
+        DICTFILE="forces"
+        TEMPFILE="temp"
+        cd $DEST_DIR/system
+        sed "s/\(liftDir *\).*/liftDir             (-$SIN $COS 0);/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR       
+        cd $DEST_DIR/system
+        sed "s/\(dragDir *\).*/dragDir             ($COS $SIN 0);/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR       
+        cd $DEST_DIR/system
+        sed "s/\(magUInf *\).*/magUInf             $VELC;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR       
+        cd $DEST_DIR/system
+        sed "s/^[[:space:]]*\(rhoInf *\).*/rhoInf              $RHO;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR       
+
+        echo - Setting normal and axial force directions
+        DICTFILE="forcesNormAxial"
+        TEMPFILE="temp"
+        cd $DEST_DIR/system
+        sed "s/\(magUInf *\).*/magUInf             $VELC;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR       
+        cd $DEST_DIR/system
+        sed "s/^[[:space:]]*\(rhoInf *\).*/rhoInf              $RHO;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR  
+        
+        echo - Setting velocity
+        DICTFILE="freestreamConditions"
+        TEMPFILE="temp"
+        cd $DEST_DIR/0.org/include
+        sed "s/\(^U *\).*/U            ($VELCX $VELCY 0.0);/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR
+
+        echo - Setting pressure
+        cd $DEST_DIR/0.org/include
+        sed "s/\(^p *\).*/p            $PRESS;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR
+
+        echo - Setting temperature
+        cd $DEST_DIR/0.org/include
+        sed "s/\(^T *\).*/T            $TEMP;/" <$DICTFILE >$TEMPFILE
+        mv -f $TEMPFILE $DICTFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR
+
+        #Set number of processors per job
+        echo - Setting number of processors
+        PROCFILE="decomposeParDict"
+        TEMPFILE="temp"
+        cd $DEST_DIR/system
+        sed "s/\(numberOfSubdomains *\).*/numberOfSubdomains $PROC; /" <$PROCFILE >$TEMPFILE
+        mv -f $TEMPFILE $PROCFILE
+        rm -f $TEMPFILE
+        cd $HOMEDIR
+
+    )
+done
+
+

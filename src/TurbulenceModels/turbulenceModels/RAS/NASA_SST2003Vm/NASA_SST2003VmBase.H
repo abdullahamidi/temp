@@ -1,0 +1,292 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | www.openfoam.com
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2017-2021 OpenCFD Ltd.
+-------------------------------------------------------------------------------
+License
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::NASA_SST2003VmBase
+
+SourceFiles
+    NASA_SST2003VmBase.C
+
+\*---------------------------------------------------------------------------*/
+
+#ifndef NASA_SST2003VmBase_H
+#define NASA_SST2003VmBase_H
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+/*---------------------------------------------------------------------------*\
+                        Class NASA_SST2003VmBase Declaration
+\*---------------------------------------------------------------------------*/
+
+template<class BasicEddyViscosityModel>
+class NASA_SST2003VmBase
+:
+    public BasicEddyViscosityModel
+{
+    // Private Member Functions
+
+        //- No copy construct
+        NASA_SST2003VmBase(const NASA_SST2003VmBase&) = delete;
+
+        //- No copy assignment
+        void operator=(const NASA_SST2003VmBase&) = delete;
+
+
+protected:
+
+    // Protected data
+
+        // Model coefficients
+
+            dimensionedScalar alphaK1_;
+            dimensionedScalar alphaK2_;
+
+            dimensionedScalar alphaOmega1_;
+            dimensionedScalar alphaOmega2_;
+
+            dimensionedScalar gamma1_;
+            dimensionedScalar gamma2_;
+
+            dimensionedScalar beta1_;
+            dimensionedScalar beta2_;
+
+            dimensionedScalar betaStar_;
+
+            dimensionedScalar a1_;
+            dimensionedScalar b1_;
+            dimensionedScalar c1_;
+
+            //- Flag to include the F3 term
+            //Switch F3_; //// S.A {17.01.23}
+
+
+        // Fields
+
+            //- Wall distance
+            //  Note: different to wall distance in parent RASModel
+            //  which is for near-wall cells only
+            const volScalarField& y_;
+
+            volScalarField k_;
+            volScalarField omega_;
+
+
+        // Decay control
+
+            //- Flag to include the decay control
+            Switch decayControl_;
+            dimensionedScalar kInf_;
+            dimensionedScalar omegaInf_;
+
+
+    // Protected Member Functions
+
+        void setDecayControl(const dictionary& dict);
+
+        virtual tmp<volScalarField> F1(const volScalarField& CDkOmega) const;
+        virtual tmp<volScalarField> F2() const;
+        //virtual tmp<volScalarField> F3() const; //// S.A {17.01.23}
+        //virtual tmp<volScalarField> F23() const;
+
+        tmp<volScalarField> blend
+        (
+            const volScalarField& F1,
+            const dimensionedScalar& psi1,
+            const dimensionedScalar& psi2
+        ) const
+        {
+            return F1*(psi1 - psi2) + psi2;
+        }
+
+        tmp<volScalarField::Internal> blend
+        (
+            const volScalarField::Internal& F1,
+            const dimensionedScalar& psi1,
+            const dimensionedScalar& psi2
+        ) const
+        {
+            return F1*(psi1 - psi2) + psi2;
+        }
+
+        tmp<volScalarField> alphaK(const volScalarField& F1) const
+        {
+            return blend(F1, alphaK1_, alphaK2_);
+        }
+
+        tmp<volScalarField> alphaOmega(const volScalarField& F1) const
+        {
+            return blend(F1, alphaOmega1_, alphaOmega2_);
+        }
+
+        tmp<volScalarField::Internal> beta
+        (
+            const volScalarField::Internal& F1
+        ) const
+        {
+            return tmp<volScalarField::Internal>::New
+            (
+                this->type() + ":beta",
+                blend(F1, beta1_, beta2_)
+            );
+        }
+
+        tmp<volScalarField::Internal> gamma
+        (
+            const volScalarField::Internal& F1
+        ) const
+        {
+            return tmp<volScalarField::Internal>::New
+            (
+                this->type() + ":gamma",
+                blend(F1, gamma1_, gamma2_)
+            );
+        }
+
+        virtual void correctNut(const volScalarField& S2);
+
+        virtual void correctNut();
+
+        //- Return k production rate
+        virtual tmp<volScalarField::Internal> Pk
+        (
+            const volScalarField::Internal& G
+        ) const;
+
+        //- Return epsilon/k which for standard RAS is betaStar*omega
+        virtual tmp<volScalarField::Internal> epsilonByk
+        (
+            const volScalarField& F1,
+            const volTensorField& gradU
+        ) const;
+/*  //// S.A {17.01.23}
+        //- Return G/nu
+        virtual tmp<volScalarField::Internal> GbyNu
+        (
+            const volScalarField::Internal& GbyNu0,
+            const volScalarField::Internal& F2,
+            const volScalarField::Internal& S2
+        ) const;
+*/
+        virtual tmp<fvScalarMatrix> kSource() const;
+
+        virtual tmp<fvScalarMatrix> omegaSource() const;
+
+        virtual tmp<fvScalarMatrix> Qsas
+        (
+            const volScalarField::Internal& S2,
+            const volScalarField::Internal& gamma,
+            const volScalarField::Internal& beta
+        ) const;
+
+
+public:
+
+    typedef typename BasicEddyViscosityModel::alphaField alphaField;
+    typedef typename BasicEddyViscosityModel::rhoField rhoField;
+    typedef typename BasicEddyViscosityModel::transportModel transportModel;
+
+
+    // Constructors
+
+        //- Construct from components
+        NASA_SST2003VmBase
+        (
+            const word& type,
+            const alphaField& alpha,
+            const rhoField& rho,
+            const volVectorField& U,
+            const surfaceScalarField& alphaRhoPhi,
+            const surfaceScalarField& phi,
+            const transportModel& transport,
+            const word& propertiesName = turbulenceModel::propertiesName
+        );
+
+
+    //- Destructor
+    virtual ~NASA_SST2003VmBase() = default;
+
+
+    // Member Functions
+
+        //- Re-read model coefficients if they have changed
+        virtual bool read();
+
+        //- Return the effective diffusivity for k
+        tmp<volScalarField> DkEff(const volScalarField& F1) const
+        {
+            return tmp<volScalarField>
+            (
+                new volScalarField("DkEff", alphaK(F1)*this->nut_ + this->nu())
+            );
+        }
+
+        //- Return the effective diffusivity for omega
+        tmp<volScalarField> DomegaEff(const volScalarField& F1) const
+        {
+            return tmp<volScalarField>
+            (
+                new volScalarField
+                (
+                    "DomegaEff",
+                    alphaOmega(F1)*this->nut_ + this->nu()
+                )
+            );
+        }
+
+        //- Return the turbulence kinetic energy
+        virtual tmp<volScalarField> k() const
+        {
+            return k_;
+        }
+
+        //- Return the turbulence kinetic energy dissipation rate
+        virtual tmp<volScalarField> omega() const
+        {
+            return omega_;
+        }
+
+        //- Solve the turbulence equations and correct the turbulence viscosity
+        virtual void correct();
+};
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#ifdef NoRepository
+    #include "NASA_SST2003VmBase.C"
+#endif
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
+
+// ************************************************************************* //

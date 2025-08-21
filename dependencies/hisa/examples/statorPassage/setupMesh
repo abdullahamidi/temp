@@ -1,0 +1,11 @@
+#!/bin/bash
+cd "${0%/*}" || exit
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions
+
+runApplication vtkUnstructuredToFoam sym_stator_BFM.vtk
+
+runApplication topoSet
+
+runApplication createPatch -overwrite
+
+runApplication transformPoints -rollPitchYaw "(90 90 0)"

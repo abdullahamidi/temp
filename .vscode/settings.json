@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "fvSolution": "raw",
+    "T": "plaintext",
+    "U": "plaintext",
+    "p": "plaintext",
+    "processPressure.C": "cpp",
+    "calculateSpectra.C": "cpp",
+    "ccm26ToFoam.C": "cpp",
+    "vector": "cpp"
+  },
+  "C_Cpp.intelliSenseEngine": "disabled"
+}

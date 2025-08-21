@@ -1,0 +1,103 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | www.openfoam.com
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2017 OpenCFD Ltd.
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    
+
+Description
+
+SourceFiles
+    tioga_injection.C
+
+\*---------------------------------------------------------------------------*/
+
+#ifndef tioga_injection_H
+#define tioga_injection_H
+
+#include "tiogaStencil.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+namespace cellCellStencils
+{
+
+/*---------------------------------------------------------------------------*\
+                        Class leastSquares Declaration
+\*---------------------------------------------------------------------------*/
+
+class tioga_injection
+:
+    public tiogaStencil
+{
+    // Private Member Functions
+
+        //- No copy construct
+        tioga_injection(const tioga_injection&) = delete;
+
+        //- No copy assignment
+        void operator=(const tioga_injection&) = delete;
+
+
+public:
+
+    //- Runtime type information
+    TypeName("tioga_injection");
+
+
+    // Constructors
+
+        //- Construct from fvMesh
+        tioga_injection(const fvMesh&, const dictionary&, const bool);
+
+
+    //- Destructor
+    virtual ~tioga_injection();
+
+
+    // Member Functions
+
+        //- Calculate lsq weights for single acceptor
+        virtual void stencilWeights
+        (
+            const point& sample,
+            const pointList& donorCcs,
+            scalarList& weights
+        ) const;
+};
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace cellCellStencils
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
+
+// ************************************************************************* //

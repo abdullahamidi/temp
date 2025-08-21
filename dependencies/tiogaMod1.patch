@@ -1,0 +1,15 @@
+--- tioga/CMakeLists.txt	2024-08-03 16:48:13.512909053 +0300
++++ /home/administrator/OpenFOAM/administrator-v2206/applications/libraries/tiogaStencil/tiogaStencil/tioga-master/CMakeLists.txt	2024-08-08 08:42:43.430822281 +0300
+@@ -3,9 +3,9 @@
+ project(TIOGA CXX C Fortran)
+ 
+ option(BUILD_SHARED_LIBS "Build shared libraries (default: off)" on)
+-option(BUILD_TIOGA_EXE "Build tioga driver code (default: off)" on)
+-option(BUILD_GRIDGEN_EXE "Build grid generator code (default: off)" on)
+-option(TIOGA_HAS_NODEGID "Support node global IDs (default: on)" on)
++option(BUILD_TIOGA_EXE "Build tioga driver code (default: off)" off) # on->off S.A
++option(BUILD_GRIDGEN_EXE "Build grid generator code (default: on)" off) # on->off S.A
++option(TIOGA_HAS_NODEGID "Support node global IDs (default: on)" off) # on->off S.A
+ option(TIOGA_ENABLE_TIMERS "Track timing information for TIOGA (default: off)" OFF)
+ option(TIOGA_OUTPUT_STATS "Output statistics for TIOGA holecutting (default: off)" OFF)
+ 

@@ -1,0 +1,12 @@
+# Files
+SOURCE_DIR=simulation
+CONFIG_FILE=runs
+RUN_SCRIPT=runSim
+
+# Number of processors per run
+PROC=20
+
+# Variables
+PI=3.14159265359
+GAMMA=1.4
+R=287.058

@@ -1,0 +1,52 @@
+# FILES ..................................................
+MESH_DIR=mesh
+SOURCE_DIR=simulation
+CONFIG_FILE=runs
+RUN_SCRIPT=runSim
+
+# PRE-PROCESS ............................................
+# Bounding box centre
+bbCX=-0.2
+bbCY=0.0
+bbCZ=0.0
+# Bounding box size
+bbSX=2
+bbSY=2
+bbSZ=2
+
+# Total (true) or static (false)
+inputTotal=0
+# inputTotal=1
+
+# Part scaling
+pScale=0.001
+# Part offset (Nose must be at [0 0 0])
+pTransX=0
+pTransY=0
+pTransZ=0
+# Part rotate ('x' is forward, 'z' is up and 'y' is side)
+pYaw=0.0
+pPitch=0.0
+pRoll=0.0
+
+# List of parts
+parts=( body fin1 fin2 fin3 fin4 )
+
+# POST-PROCESS ...........................................
+
+# References
+REFLENGTH=0.03
+REFAREA=0.000706858347
+# Moment reference centre
+mrcX=-0.144
+mrcY=0
+mrcZ=0
+
+# ADMIN ..................................................
+# Number of processors per run
+PROC=12
+
+# Variables
+PI=3.14159265359
+GAMMA=1.4
+R=287.058

@@ -1,0 +1,118 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------------
+
+function check() {
+    $@
+    if [ $? -ne 0 ]; then
+    	echo "Error while executing $@"
+        exit 1
+    fi
+}
+
+echo
+echo "Compiling dependencies ..."
+echo
+
+cd dependencies
+. Allwmake 
+cd ..
+
+targetType=libso                                    # Preferred library type
+. ${WM_PROJECT_DIR:?}/wmake/scripts/AllwmakeParseArguments
+. ${WM_PROJECT_DIR:?}/wmake/scripts/have_fftw
+. ${WM_PROJECT_DIR:?}/wmake/scripts/have_ccmio
+
+echo
+echo "Compiling src ..."
+echo
+
+if ! have_fftw
+then
+    echo "FFTW not found. Can't continue compilation."
+    exit 1
+fi
+
+cd src
+if [ $FOAM_API -gt 2206 ]
+then
+    cd randomProcesses && { check wmake; cd ..; }
+else
+    echo "==> skip randomProcesses library (not supported)"
+fi
+
+cd functionObjects && { check wmake; cd ..; }
+cd dbns && { check wmake; cd ..; }
+cd dynamicMesh && { check wmake; cd ..; }
+cd finiteVolume && { check wmake; cd ..; }
+cd OpenFOAM && { check wmake; cd ..; }
+cd overset && { check wmake; cd ..; }
+cd sixDoFRigidBodyMotion && { check wmake; cd ..; }
+cd TurbulenceModels && { check wmake; cd ..; }
+cd fvOptions && { check wmake; cd ..; }
+cd ..
+
+echo
+echo "Compiling Applications ..."
+echo
+
+cd applications/utilities
+
+cd reconstruct
+cd reconstructFilteredField && { check wmake; cd ..; }
+
+if [ $FOAM_API -gt 2206 ]
+then
+    cd reconstructVolumeNoise && { check wmake; cd ..; }
+else
+    echo Current OpenFOAM version does not support noiseModel class with access to time directories in processors. Skipping reconstructVolumeNoise application.
+fi
+
+cd ..
+
+cd mesh/conversion
+
+if [ ! -f cgns2foam/.git ] && [ ! -d cgns2foam/.git ]; then
+  pwd
+  echo "cgns2foam submodule is not cloned"
+  exit 1
+fi
+
+check mkdir -p cgns2foam/build
+cd cgns2foam/build
+check ../install.sh $(dirname $FOAM_USER_APPBIN)
+cd ../..
+
+cd ccm26ToFoam
+if have_ccmio
+then
+    check wmake
+else
+    echo "==> skip ccm26ToFoam (no CCMIO)"
+fi
+
+#echo "Copy the libccmio.so to $FOAM_USER_LIBBIN"
+#cp libccmio-2.6.1/lib/lib* $FOAM_USER_LIBBIN
+    
+
+cd ../sumoSU2ToFoam
+wmake
+cd ../../manipulation/reconstructCyclic
+wmake
+#cd ../volMeshDeformer
+#wmake
+cd ../../../miscellaneous
+cd printCellID
+wmake
+cd ../../postProcessing/calculateTimeVariantP
+wmake
+cd ../steadyFWHsolver
+wmake
+cd ../calculateSpectra
+wmake
+cd ../../..
+
+cd solvers/compressible/tamsAero
+./Allwmake $@
+cd ../../../..
+

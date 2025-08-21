@@ -1,0 +1,19 @@
+#!/bin/bash
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication -s fluid blockMesh -region fluid
+runApplication -s fluid surfaceFeatureExtract -dict system/fluid/surfaceFeatureExtractDict
+
+runApplication -s fluid snappyHexMesh -overwrite -region fluid
+
+runApplication -s fluid changeDictionary -region fluid
+runApplication -s fluid extrudeMesh -region fluid -dict system/fluid/extrudeMeshDict
+
+runApplication -s solid blockMesh -region solid
+runApplication -s solid surfaceFeatureExtract -dict system/solid/surfaceFeatureExtractDict
+
+runApplication -s solid snappyHexMesh -overwrite -region solid
+
+runApplication -s solid changeDictionary -region solid
+runApplication -s solid extrudeMesh -region solid -dict system/solid/extrudeMeshDict

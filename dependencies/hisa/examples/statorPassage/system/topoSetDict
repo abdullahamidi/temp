@@ -1,0 +1,102 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2206                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    {
+        name    shroud;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (-1 0.324 -0.2) (1 0.326 0.2);
+    	}	
+    }
+    {
+        name    hub;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (-1 0.24 -0.2) (1 0.251 0.2);
+    	}	
+    }
+    {
+        name    frontAndBack_right;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (-0.2 0.24 -0.2) (-0.001 0.326 0.2);
+    	}	
+    }
+    {
+        name    frontAndBack_left;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (0.001 0.24 -0.2) (0.2 0.326 0.2);
+    	}	
+    }
+    {
+        name    inlet;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (-1 0.24 -0.2) (1 0.326 -0.09);
+    	}	
+    }
+    {
+        name    outlet;
+        type    faceSet;
+        action  new;
+    	source boxToFace;
+    	sourceInfo
+    	{
+       		box   (-1 0.24 0.14) (1 0.326 0.2);
+    	}	
+    }
+
+    {
+        name    stator;
+        type    cellSet;
+        action  new;
+    	source boxToCell;
+    	sourceInfo
+    	{
+       		box   (-1 0 0) (1 0.5 0.05);
+    	}	
+    }
+    {
+        name    stator;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+        	set stator;           
+        }    
+	}
+);
+
+// ************************************************************************* //

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+DIR=$(pwd)
+
+cd transient
+
+rm -f  log.getPatchPoints
+runApplication getPatchPoints -patch wing
+
+cd constant/modal
+
+#Extract the raw points from dictionary output
+sed -n 's/initialPoints[[:space:]]\+[0-9]\+[[:space:]]\+([[:space:]]*([[:space:]]*//; s/[[:space:]]*)[[:space:]]*);//; s/[[:space:]]*)[[:space:]]*([[:space:]]*/\n/gp' wingPoints > points
+
+echo 'Generate mode shapes and mass, damping and stiffness matrices'
+python3 $DIR/../modeShape/genModeShape.py
+
+cd $DIR
+
+# ----------------------------------------------------------------- end-of-file

@@ -1,0 +1,4 @@
+mergePolyMesh.C
+reconstructCyclic.C
+
+EXE = $(FOAM_USER_APPBIN)/reconstructCyclic

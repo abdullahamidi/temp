@@ -1,0 +1,12 @@
+
+
+derivedSources=sources/derived
+
+$(derivedSources)/rotorDiskSourceTams/rotorDiskSourceTams.C
+
+$(derivedSources)/rotorDiskSourceTams/trimModelTams/trimModelTams/trimModelTams.C
+$(derivedSources)/rotorDiskSourceTams/trimModelTams/trimModelTams/trimModelTamsNew.C
+$(derivedSources)/rotorDiskSourceTams/trimModelTams/fixedTams/fixedTrimTams.C
+$(derivedSources)/rotorDiskSourceTams/trimModelTams/targetCoeffTams/targetCoeffTrimTams.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfvOptionsTams

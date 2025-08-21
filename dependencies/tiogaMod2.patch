@@ -1,0 +1,13 @@
+--- tioga/src/highOrder.C	2024-08-03 16:48:13.516909052 +0300
++++ /home/administrator/OpenFOAM/administrator-v2206/applications/libraries/tiogaStencil/tiogaStencil/tioga-master/src/highOrder.C	2023-06-02 13:57:16.925701000 +0300
+@@ -140,8 +140,8 @@
+            } 
+ 	  if (flag) 
+ 	    {
+-	      if (ncount ==nvert) iblank_cell[icell]=-1;
+-//	      if (ncount > 0)  iblank_cell[icell]=-1;
++	      //if (ncount ==nvert) iblank_cell[icell]=-1; // S.A default by TIOGA
++	      if (ncount > 0)  iblank_cell[icell]=-1; // S.A
+ //	      if (ncount >= nvert/2) iblank_cell[icell]=-1;
+ 	    }
+ 	  icell++;

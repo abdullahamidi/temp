@@ -1,0 +1,15 @@
+[submodule "dependencies/OpenFOAM"]
+	path = dependencies/OpenFOAM
+	url = https://develop.openfoam.com/Development/openfoam.git
+[submodule "dependencies/hisa"]
+	path = dependencies/hisa
+	url = https://gitlab.com/hisa/hisa.git
+[submodule "dependencies/tioga"]
+	path = dependencies/tioga
+	url = https://github.com/jsitaraman/tioga.git
+[submodule "dependencies/ThirdParty-common"]
+	path = dependencies/ThirdParty-common
+	url = https://develop.openfoam.com/Development/ThirdParty-common.git
+[submodule "applications/utilities/mesh/conversion/cgns2foam"]
+	path = applications/utilities/mesh/conversion/cgns2foam
+	url = https://git.tai.com.tr/t26733/cgns2foam.git
